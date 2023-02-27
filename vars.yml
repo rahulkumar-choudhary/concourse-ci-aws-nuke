@@ -6,7 +6,7 @@ AWS_SECRET_ACCESS_KEY: xxxxxxxxxxxxx
 # put on line 49 and 96 of concourse-pipeline.yml
 # echo "aws_session_token = ((AWS_SESSION_TOKEN))" >> $HOME/.aws/credentials
 
-# for approach 2 i.e file: approval2.yml
+# for approach 2 i.e file: concourse-ci-aws-nuke-approach2.yml
 # nuke-config: |
 #              regions:
 #              - eu-west-1
