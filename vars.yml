@@ -5,3 +5,15 @@ AWS_SECRET_ACCESS_KEY: xxxxxxxxxxxxx
 
 # put on line 49 and 96 of concourse-pipeline.yml
 # echo "aws_session_token = ((AWS_SESSION_TOKEN))" >> $HOME/.aws/credentials
+
+# for approach 2 i.e file: approval2.yml
+# nuke-config: |
+#              regions:
+#              - eu-west-1
+#              - global
+
+#              account-blocklist:
+#              - "999999999999" # production
+
+#              accounts:
+#                "639362760445": {} # aws-nuke-example
