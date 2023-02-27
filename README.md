@@ -1,5 +1,7 @@
 # concourse-ci-aws-nuke
 
+![concourse-ci-nuke](https://user-images.githubusercontent.com/59869006/221508410-ca78dd45-9ed1-490d-a767-ef8817ce6cfd.png)
+
 ## Step 1: docker compose: To setup concourse-ci 
 
 ```bash
@@ -49,3 +51,4 @@ fly -t tutorial set-pipeline -p aws-nuke -c approval.yml --load-vars-from vars.y
 ```bash
 fly -t tutorial unpause-pipeline -p aws-nuke
 ```
+
