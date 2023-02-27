@@ -11,8 +11,11 @@ docker compose down
 ```
 
 Web-UI login: 
+
 URL: https://localhost:8080
+
 username: `test`
+
 password: `test`
 
 ## Step 2: update vars.yml file with AWS CLI credentials
@@ -35,11 +38,14 @@ chmod +x run.sh
 ### OR manually trigger using the following commands
 
 ### step 1: login
+```bash
 fly -t tutorial login -c http://localhost:8080 -u test -p test
-
+```
 ### step 2: creating the pipeline
+```bash
 fly -t tutorial set-pipeline -p aws-nuke -c approval.yml --load-vars-from vars.yml --non-interactive
-
+```
 ### step 3: unpause the pipeline to trigger 
+```bash
 fly -t tutorial unpause-pipeline -p aws-nuke
-
+```
