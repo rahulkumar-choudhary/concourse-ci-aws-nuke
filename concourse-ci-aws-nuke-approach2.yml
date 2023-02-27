@@ -1,0 +1,107 @@
+---
+resource_types:
+- name: slack-alert
+  type: docker-image
+  source:
+    repository: arbourd/concourse-slack-alert-resource
+
+- name: file
+  type: docker-image
+  source:
+    repository: quay.io/henry40408/concourse-file-resource
+
+resources:
+- name: notify
+  type: slack-alert
+  source:
+    url: https://hooks.slack.com/services/xxxxxxxx/xxxxxxxx/xxxxxxxxx
+
+- name: aws-nuke-config-local-file
+  type: file
+  source:
+    filename: nuke-config.yml
+    content: ((nuke-config))
+ 
+jobs:
+- name: aws-nuke-dry-run
+  plan:
+  - get: aws-nuke-config-local-file
+    trigger: true
+  - task: aws-nuke-dry-run-task
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          repository: rahul079/aws-nuke
+      inputs:
+      - name: aws-nuke-config-local-file
+      run:
+        path: sh
+        args:
+        - -cx
+        - |
+          mkdir -p ~/.aws
+          cd ~/.aws 
+          touch config credentials
+          chmod 666 config
+          chmod 666 credentials
+          echo "[default]" > $HOME/.aws/config
+          echo "output = json" >> $HOME/.aws/config
+          echo "[default]" > $HOME/.aws/credentials
+          echo "aws_access_key_id = ((AWS_ACCESS_KEY))" >> $HOME/.aws/credentials
+          echo "aws_secret_access_key = ((AWS_SECRET_ACCESS_KEY))" >> $HOME/.aws/credentials
+          echo ""
+          cd -
+          ls aws-nuke-config-local-file
+          aws-nuke -c aws-nuke-config-local-file/nuke-config.yml --profile default --force 
+
+- name: slack-notification
+  plan:
+  - get: aws-nuke-config-local-file
+    trigger: true
+    passed: 
+      - aws-nuke-dry-run  
+  - put: notify
+    params:
+      message: |  
+        aws nuke! ______________________________
+        List of aws resources nuked: " http://localhost:8080/teams/main/pipelines/aws-nuke/jobs/aws-nuke-dry-run " ______________________________
+        approve aws-nuke: " http://localhost:8080/teams/main/pipelines/aws-nuke/jobs/aws-nuke-approved "
+
+- name: aws-nuke-approved
+  plan:  
+  - get: aws-nuke-config-local-file
+    trigger: false
+    passed: 
+      - slack-notification
+  - task: aws-nuke-approved
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          repository: rahul079/aws-nuke
+      inputs:
+      - name: aws-nuke-config-local-file
+      run:
+        path: sh
+        args:
+        - -cx
+        - |
+          mkdir -p ~/.aws
+          cd ~/.aws 
+          touch config credentials
+          chmod 666 config
+          chmod 666 credentials
+          echo "[default]" > $HOME/.aws/config
+          echo "output = json" >> $HOME/.aws/config
+          echo "[default]" > $HOME/.aws/credentials
+          echo "aws_access_key_id = ((AWS_ACCESS_KEY))" >> $HOME/.aws/credentials
+          echo "aws_secret_access_key = ((AWS_SECRET_ACCESS_KEY))" >> $HOME/.aws/credentials
+          echo ""
+          cd -
+          aws-nuke -c aws-nuke-config-local-file/nuke-config.yml --profile default --force 
+
+
+# ref: https://github.com/henry40408/concourse-file-resource
