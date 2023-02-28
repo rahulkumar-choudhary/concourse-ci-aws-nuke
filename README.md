@@ -24,8 +24,8 @@ password: `test`
 
 ```yml
 ---
-AWS_ACCESS_KEY: AKIAZJXH5P36QWM2AE7J
-AWS_SECRET_ACCESS_KEY: 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
+AWS_ACCESS_KEY: xxxxxxxxxxxxx
+AWS_SECRET_ACCESS_KEY: xxxxxxxxxxxxx
 # AWS_SESSION_TOKEN: xxxxxxxxxxxxx
 ```
 
