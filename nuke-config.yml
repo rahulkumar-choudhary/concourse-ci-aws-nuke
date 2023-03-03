@@ -6,4 +6,4 @@ account-blocklist:
 - "999999999999" # production
 
 accounts:
-  "639362760445": {} # aws-nuke-example
+  "xxxxxxxxxxxx": {} # aws-nuke-example
